@@ -13,7 +13,6 @@ class Routes {
   async getAppInfo(req: Request<{ appid: string }>, res: Response) {
     const appid = req.params.appid as string;
 
-    this.cache.dumpMemoryKeys();
 
     if (this.cache.get(appid))
       return res.status(200).json({
@@ -38,7 +37,6 @@ class Routes {
     if (!appid)
       return res.status(400).json({ error: "appid is not in the query!" });
 
-    this.cache.dumpMemoryKeys();
 
     if (this.cache.get(changenumber + appid))
       return res.status(200).json({
@@ -67,7 +65,6 @@ class Routes {
     if (!appid)
       return res.status(400).json({ error: "appid is not in the query!" });
 
-    this.cache.dumpMemoryKeys();
 
     if (this.cache.get(changenumber + appid))
       return res.status(200).json({

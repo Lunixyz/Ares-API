@@ -1,7 +1,5 @@
-import { access, constants, writeFileSync } from "fs";
 import GlobalOffensive from "globaloffensive";
 import SteamUser from "steam-user";
-import root from "app-root-path";
 
 type appChanges = {
   appid: number;
@@ -100,7 +98,6 @@ export class cache {
   } = {};
 
   put(k: string, v: unknown, ttl: number) {
-    this.log(`Tried to store key "${k}" in memory`);
     const expireDate = Date.now() + ttl * 1000;
     this.cache[k] = {
       value: v,
@@ -112,7 +109,6 @@ export class cache {
 
   get(k: string) {
     if (this.cache[k]?.expireDate && this.cache[k].expireDate > Date.now()) {
-      this.log(`Tried to load "${k}" off memory`);
       return this.cache[k].value;
     }
     delete this.cache[k];
@@ -120,36 +116,6 @@ export class cache {
   }
 
   getTTL(k: string) {
-    this.log(`Tried to load "${k}" off memory`);
     return Math.max(this.cache[k]?.expireDate - Date.now() ?? 0, 0);
-  }
-
-  dumpMemoryKeys() {
-    this.log(`Dumped memory: ${JSON.stringify(Object.keys(this.cache))}`);
-  }
-
-  private log(data: string) {
-    const trackTime = new Date();
-    access(`${root}/logs/log.txt`, constants.F_OK | constants.W_OK, (err) => {
-      if (err) {
-        writeFileSync(
-          `${root}/logs/log.txt`,
-          `<Neptune API @ ${trackTime.getHours()}:${trackTime.getMinutes()}:${String(
-            trackTime.getSeconds()
-          ).padStart(2, "0")}> -> ${data}`,
-          "utf-8"
-        );
-      }
-    });
-
-    writeFileSync(
-      `${root}/logs/log.txt`,
-      `<Neptune API @ ${trackTime.getHours()}:${trackTime.getMinutes()}:${String(
-        trackTime.getSeconds()
-      ).padStart(2, "0")}> -> ${data}\n`,
-      {
-        flag: "a",
-      }
-    );
   }
 }
