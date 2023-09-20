@@ -14,6 +14,7 @@ export class steamClient extends SteamUser {
       enablePicsCache: true,
       picsCacheAll: true,
       changelistUpdateInterval: 5000,
+      dataDirectory: "~/.local/share/node-steamuser",
     });
     super.logOn({
       accountName: process.env.steam_login,
