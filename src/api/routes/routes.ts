@@ -1,18 +1,17 @@
 import { Request, Response, Router } from "express";
 import * as dotenv from "dotenv";
 import client from "../server";
-import { cache } from "../../components/components";
+import { Cache } from "../../components/components";
 
 dotenv.config();
 
 class Routes {
-  public cache: cache;
+  public cache: Cache;
   constructor() {
-    this.cache = new cache();
+    this.cache = new Cache();
   }
   async getAppInfo(req: Request<{ appid: string }>, res: Response) {
     const appid = req.params.appid as string;
-
 
     if (this.cache.get(appid))
       return res.status(200).json({
@@ -36,7 +35,6 @@ class Routes {
     const appid = req.query.appid as string;
     if (!appid)
       return res.status(400).json({ error: "appid is not in the query!" });
-
 
     if (this.cache.get(changenumber + appid))
       return res.status(200).json({
@@ -64,7 +62,6 @@ class Routes {
     const appid = req.query.appid as string;
     if (!appid)
       return res.status(400).json({ error: "appid is not in the query!" });
-
 
     if (this.cache.get(changenumber + appid))
       return res.status(200).json({

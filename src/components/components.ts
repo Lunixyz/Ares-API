@@ -7,14 +7,13 @@ type appChanges = {
   needs_token: boolean;
 }[];
 
-export class steamClient extends SteamUser {
+export class SteamClient extends SteamUser {
   constructor() {
     super({
       autoRelogin: true,
       enablePicsCache: true,
       picsCacheAll: true,
       changelistUpdateInterval: 5000,
-      dataDirectory: "~/.local/share/node-steamuser",
     });
     super.logOn({
       accountName: process.env.steam_login,
@@ -24,19 +23,15 @@ export class steamClient extends SteamUser {
   }
 }
 
-export class csgoClient extends GlobalOffensive {
-  constructor(steamClient: SteamUser) {
-    super(steamClient);
-  }
-}
+export class CsgoClient extends GlobalOffensive {}
 
 export class Base {
   public steamClient: SteamUser;
   public csgoClient: GlobalOffensive;
 
   constructor() {
-    this.steamClient = new steamClient();
-    this.csgoClient = new csgoClient(this.steamClient);
+    this.steamClient = new SteamClient();
+    this.csgoClient = new CsgoClient(this.steamClient);
   }
 
   get getPicsCache() {
@@ -64,8 +59,12 @@ export class Base {
   async getProductChanges(changenumber: number, filterAppId: number) {
     return (
       (
-        await this.steamClient.getProductChanges(changenumber, (err, change) =>
-          err ? err : change
+        await this.steamClient.getProductChanges(
+          changenumber,
+          (err, change) => {
+            if (err) throw err;
+            return change;
+          }
         )
       ).appChanges as unknown as appChanges
     ).filter((app) => app.appid === filterAppId);
@@ -74,8 +73,12 @@ export class Base {
   async getPackageChanges(changenumber: number, filterAppId: number) {
     return (
       (
-        await this.steamClient.getProductChanges(changenumber, (err, change) =>
-          err ? err : change
+        await this.steamClient.getProductChanges(
+          changenumber,
+          (err, change) => {
+            if (err) throw err;
+            return change;
+          }
         )
       ).packageChanges as unknown as appChanges
     ).filter((app) => app.appid === filterAppId);
@@ -90,7 +93,7 @@ export class Base {
   }
 }
 
-export class cache {
+export class Cache {
   cache: {
     [key: string]: {
       value: unknown;
@@ -117,6 +120,6 @@ export class cache {
   }
 
   getTTL(k: string) {
-    return Math.max(this.cache[k]?.expireDate - Date.now() ?? 0, 0);
+    return Math.max(this.cache[k]?.expireDate - Date.now(), 0);
   }
 }
