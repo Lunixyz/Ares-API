@@ -10,15 +10,11 @@ type appChanges = {
 export class SteamClient extends SteamUser {
   constructor() {
     super({
-      autoRelogin: true,
       enablePicsCache: true,
       picsCacheAll: true,
       changelistUpdateInterval: 5000,
     });
-    super.logOn({
-      accountName: process.env.steam_login,
-      password: process.env.steam_password,
-    });
+    super.logOn();
     super.gamesPlayed(730);
   }
 }
@@ -56,18 +52,19 @@ export class Base {
     return this.steamClient.getPlayerCount(appid);
   }
 
-  async getProductChanges(changenumber: number, filterAppId: number) {
-    return (
-      (
-        await this.steamClient.getProductChanges(
-          changenumber,
-          (err, change) => {
-            if (err) throw err;
-            return change;
-          }
-        )
-      ).appChanges as unknown as appChanges
-    ).filter((app) => app.appid === filterAppId);
+  async getProductChanges(
+    changenumber: number,
+    filterAppId?: number | undefined
+  ) {
+    const app = (
+      await this.steamClient.getProductChanges(changenumber, (err, change) => {
+        if (err) throw err;
+        return change;
+      })
+    ).appChanges as unknown as appChanges;
+
+    if (filterAppId) return app.filter((p) => p.appid === filterAppId);
+    return app;
   }
 
   async getPackageChanges(changenumber: number, filterAppId: number) {
@@ -90,36 +87,5 @@ export class Base {
 
   getPackageInfo() {
     return this.steamClient.picsCache.packages;
-  }
-}
-
-export class Cache {
-  cache: {
-    [key: string]: {
-      value: unknown;
-      expireDate: number;
-    };
-  } = {};
-
-  put(k: string, v: unknown, ttl: number) {
-    const expireDate = Date.now() + ttl * 1000;
-    this.cache[k] = {
-      value: v,
-      expireDate: expireDate,
-    };
-
-    return true;
-  }
-
-  get(k: string) {
-    if (this.cache[k]?.expireDate && this.cache[k].expireDate > Date.now()) {
-      return this.cache[k].value;
-    }
-    delete this.cache[k];
-    return undefined;
-  }
-
-  getTTL(k: string) {
-    return Math.max(this.cache[k]?.expireDate - Date.now(), 0);
   }
 }

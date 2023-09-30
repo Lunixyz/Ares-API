@@ -1,8 +1,8 @@
-import https from "https";
+import http from "http";
 import { app } from "./app";
-import { Base } from "../components/components";
+import { Base } from "../modules/appinfo";
 
-https.createServer(app).listen(3000);
+http.createServer(app).listen(3000);
 console.log("Up & Running.");
 
 const client = new Base();

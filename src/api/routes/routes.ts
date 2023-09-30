@@ -1,7 +1,8 @@
 import { Request, Response, Router } from "express";
 import * as dotenv from "dotenv";
 import client from "../server";
-import { Cache } from "../../components/components";
+import { Cache } from "../../modules/cache";
+import { Status } from "../../modules/status";
 
 dotenv.config();
 
@@ -10,6 +11,11 @@ class Routes {
   constructor() {
     this.cache = new Cache();
   }
+  async getUpdatedApps(req: Request<{ appid: string }>) {
+    const appid = req.params.appid as string;
+    await client.getUpdatedApps(appid);
+  }
+
   async getAppInfo(req: Request<{ appid: string }>, res: Response) {
     const appid = req.params.appid as string;
 
@@ -33,8 +39,6 @@ class Routes {
   async getAppChange(req: Request<{ changeid: string }>, res: Response) {
     const changenumber = req.params.changeid as string;
     const appid = req.query.appid as string;
-    if (!appid)
-      return res.status(400).json({ error: "appid is not in the query!" });
 
     if (this.cache.get(changenumber + appid))
       return res.status(200).json({
@@ -92,6 +96,28 @@ class Routes {
       playerCount: (await client.getAppUserCount(parseInt(appid))).playerCount,
     });
   }
+  async getCounterStrikeStatus(res: Response) {
+    const getCache = this.cache.get("status");
+
+    if (getCache) {
+      const cacheTTL = this.cache.getTTL("status");
+      return res.status(200).json({
+        data: {
+          cacheTTL,
+          getCache,
+        },
+      });
+    }
+
+    const status = await new Status().getAllStatus();
+    this.cache.put("status", status, 45);
+
+    return res.status(200).json({
+      data: {
+        status,
+      },
+    });
+  }
 }
 
 export const router = Router();
@@ -110,3 +136,7 @@ router.get("/packagechange/:changeid", async (req, res) =>
 router.get("/usercount/:appid", async (req, res) =>
   routes.getUserCount(req, res)
 );
+
+router.get("/updatedapps/:appid", async (req) => routes.getUpdatedApps(req));
+
+router.get("/status", async (_, res) => routes.getCounterStrikeStatus(res));
