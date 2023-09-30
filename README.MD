@@ -2,14 +2,14 @@
 </div>
 
 <div align="center">
-<h1>✨ Neptune API ✨</h1>
+<h1>✨ Tsuki API ✨</h1>
   Neptune API API é um projeto feito por Lunxi. <br>
 </div>
 
 <br>
 <div align="center">
-  <h3> Neptune API — Sobre </h3>
-Neptune API é uma API RESTful feita para o website https://lunxi.dev poder ter acesso a informações da Steam
+  <h3> Tsuki API — Sobre </h3>
+Tsuki API é uma API RESTful feita para o website https://lunxi.dev poder ter acesso a informações da Steam
 </div>
 
 <h1>Contribuindo</h1>
