@@ -19,7 +19,6 @@ export class SteamClient extends SteamUser {
   }
 }
 
-export class CsgoClient extends GlobalOffensive {}
 
 export class Base {
   public steamClient: SteamUser;
@@ -27,7 +26,7 @@ export class Base {
 
   constructor() {
     this.steamClient = new SteamClient();
-    this.csgoClient = new CsgoClient(this.steamClient);
+    this.csgoClient = new GlobalOffensive(this.steamClient);
   }
 
   get getPicsCache() {
@@ -81,8 +80,9 @@ export class Base {
     ).filter((app) => app.appid === filterAppId);
   }
 
-  getUpdatedApps(appid: string) {
-    return this.steamClient.picsCache.apps[appid];
+  getUpdatedApps(appid?: string) {
+    if (appid) return this.steamClient.picsCache.apps[appid];
+    return this.steamClient.picsCache.apps;
   }
 
   getPackageInfo() {
