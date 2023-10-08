@@ -1,14 +1,21 @@
-import axios, { AxiosResponse } from "axios";
 import { APIResponse } from "../interfaces/APIResponse";
 
 export class Status {
-  public api: Promise<AxiosResponse>;
+  public api: Promise<Response>;
   public data: Promise<APIResponse>;
   constructor() {
-    this.api = axios.get(
-      `https://api.steampowered.com/ICSGOServers_730/GetGameServersStatus/v1/?key=${process.env.KEY}`
+    this.api = fetch(
+      `https://api.steampowered.com/ICSGOServers_730/GetGameServersStatus/v1/?key=${process.env.KEY}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
     );
-    this.data = this.api.then(async (e) => e.data as APIResponse);
+    this.data = this.api.then(async (e) => {
+      return (await e.json()) as unknown as APIResponse;
+    });
   }
 
   private async getServices() {
