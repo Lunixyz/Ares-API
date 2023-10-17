@@ -100,17 +100,10 @@ class Routes {
     const getCache = this.cache.get("status");
     const cacheTTL = this.cache.getTTL("status");
 
-    if (getCache) {
-      return res.status(200).json({
-        data: {
-          cacheTTL,
-          getCache,
-        },
-      });
+    if (!getCache) {
+      const status = await new Status().getAllStatus();
+      this.cache.put("status", status, 45);
     }
-
-    const status = await new Status().getAllStatus();
-    this.cache.put("status", status, 45);
 
     return res.status(200).json({
       data: {
