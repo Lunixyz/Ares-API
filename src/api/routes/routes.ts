@@ -98,9 +98,9 @@ class Routes {
   }
   async getCounterStrikeStatus(res: Response) {
     const getCache = this.cache.get("status");
+    const cacheTTL = this.cache.getTTL("status");
 
     if (getCache) {
-      const cacheTTL = this.cache.getTTL("status");
       return res.status(200).json({
         data: {
           cacheTTL,
@@ -114,8 +114,9 @@ class Routes {
 
     return res.status(200).json({
       data: {
-        status,
-      },
+        cacheTTL,
+        getCache,
+        },
     });
   }
 }
