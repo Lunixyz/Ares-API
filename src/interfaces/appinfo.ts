@@ -1,16 +1,19 @@
 export interface DATA {
-  apps: {
-    [appid: number]: {
-      changenumber: number;
-      missingToken: boolean;
-      appinfo: {
-        appid: string;
-        common: COMMON;
-      };
-    };
-  };
-  unkownApps: number[];
+  apps: Record<number, APPINFO>;
+  packages: Record<number, PACKAGEINFO>;
+  unknownApps: number[];
   unknownPackages: number[];
+}
+export interface APPINFO {
+  appinfo: Record<string, unknown>;
+  changenumber: number;
+  missingToken: boolean;
+}
+
+export interface PACKAGEINFO {
+  changenumber: number;
+  missingToken: boolean;
+  packageinfo: unknown;
 }
 
 export interface COMMON {
@@ -46,6 +49,41 @@ export interface COMMON {
   primary_genre: string;
   genres: GENRES;
   category: CATEGORY;
+}
+
+export enum COMMON_ENUMS {
+  clienticon = "clienticon",
+  clienttga = "clienttga",
+  name = "name",
+  languages = "languages",
+  logo = "logo",
+  logo_small = "logo_small",
+  icon = "icon",
+  metacritic_url = "metacritic_url",
+  clienticns = "clienticns",
+  oslist = "oslist",
+  type = "type",
+  linuxclienticon = "linuxclienticon",
+  exfgls = "exfgls",
+  osarch = "osarch",
+  osextended = "osextended",
+  steamchinaapproved = "steamchinaapproved",
+  name_localized = "name_localized",
+  releasestatsteamchina = "releasestatsteamchina",
+  content_descriptors = "content_descriptors",
+  has_adult_content = "has_adult_content",
+  has_adult_content_violence = "has_adult_content_violence",
+  steam_deck_compatibility = "steam_deck_compatibility",
+  market_presence = "market_presence",
+  controllertagwizard = "controllertagwizard",
+  small_capsule = "small_capsule",
+  header_image = "header_image",
+  library_assets = "library_assets",
+  store_asset_mtime = "store_asset_mtime",
+  associations = "associations",
+  primary_genre = "primary_genre",
+  genres = "genres",
+  category = "category",
 }
 
 export interface LANGUAGES {

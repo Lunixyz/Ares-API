@@ -6,6 +6,14 @@ export class Cache {
     };
   } = {};
 
+  update(k: string, v: unknown) {
+    if (this.cache[k]) {
+      this.cache[k].value = v;
+      return true;
+    }
+    return false;
+  }
+
   put(k: string, v: unknown, ttl: number) {
     const expireDate = Date.now() + ttl * 1000;
     this.cache[k] = {

@@ -1,11 +1,31 @@
 import GlobalOffensive from "globaloffensive";
 import SteamUser from "steam-user";
+import { Cache } from "./cache";
+import { DATA } from "../interfaces/appinfo";
 
 type appChanges = {
   appid: number;
   change_number: number;
   needs_token: boolean;
 }[];
+
+enum dataType {
+  apps = "apps",
+  packages = "packages",
+  unknownApps = "unknownApps",
+  unknownPackages = "unknownPackages",
+}
+
+enum appInfoType {
+  appid = "appid",
+  common = "common",
+  depots = "depots",
+  extended = "extended",
+  config = "config",
+  install = "install",
+  ufs = "ufs",
+  localization = "localization",
+}
 
 export class SteamClient extends SteamUser {
   constructor() {
@@ -19,36 +39,52 @@ export class SteamClient extends SteamUser {
   }
 }
 
-
 export class Base {
+  public cache: Cache;
   public steamClient: SteamUser;
   public csgoClient: GlobalOffensive;
 
   constructor() {
     this.steamClient = new SteamClient();
     this.csgoClient = new GlobalOffensive(this.steamClient);
+    this.cache = new Cache();
   }
 
   get getPicsCache() {
     return this.steamClient.picsCache;
   }
 
-  getProductInfo(appids: number[]) {
-    return this.steamClient.getProductInfo(
-      appids,
-      [],
-      true,
-      (_, apps, packages, unknownApps, unknownPackages) => [
-        apps,
-        packages,
-        unknownApps,
-        unknownPackages,
-      ]
-    );
-  }
+  async getProductInfo(
+    appids: number,
+    dataType: dataType,
+    appInfoType: appInfoType,
+  ) {
+    const data = this.cache.get(appids.toString());
 
-  getAppUserCount(appid: number) {
-    return this.steamClient.getPlayerCount(appid);
+    if (!data) {
+      const data = await this.steamClient.getProductInfo(
+        [appids],
+        [],
+        true,
+        (_, apps, packages, unknownApps, unknownPackages) => [
+          apps,
+          packages,
+          unknownApps,
+          unknownPackages,
+        ]
+      );
+
+      this.cache.put(appids.toString(), data, 45);
+      if (!appInfoType || !dataType) return data as DATA;
+
+      if (dataType === "apps" && appInfoType)
+        return (data as DATA).apps[appids].appinfo[appInfoType]
+    }
+
+    if (dataType === "apps" && appInfoType)
+      return (data as DATA).apps[appids].appinfo[appInfoType];
+
+    if (!appInfoType || !dataType) return data as DATA;
   }
 
   async getProductChanges(
