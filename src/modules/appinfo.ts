@@ -34,7 +34,10 @@ export class SteamClient extends SteamUser {
       picsCacheAll: true,
       changelistUpdateInterval: 5000,
     });
-    super.logOn();
+    super.logOn({
+      accountName: process.env.steamName ?? "",
+      password: process.env.steamPassword ?? "",
+    });
     super.gamesPlayed(730);
   }
 }
@@ -57,7 +60,7 @@ export class Base {
   async getProductInfo(
     appids: number,
     dataType: dataType,
-    appInfoType: appInfoType,
+    appInfoType: appInfoType
   ) {
     const data = this.cache.get(appids.toString());
 
@@ -78,7 +81,7 @@ export class Base {
       if (!appInfoType || !dataType) return data as DATA;
 
       if (dataType === "apps" && appInfoType)
-        return (data as DATA).apps[appids].appinfo[appInfoType]
+        return (data as DATA).apps[appids].appinfo[appInfoType];
     }
 
     if (dataType === "apps" && appInfoType)

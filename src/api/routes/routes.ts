@@ -7,19 +7,18 @@ dotenv.config();
 export const router = Router();
 const routes = new Routes();
 
-router.get("/appinfo/:appid/:dataType?/:json?", async (req, res) =>
+router.get("/app/:appid/:dataType?/:json?", async (req, res) =>
   routes.getAppInfo(req, res)
 );
 
-router.get("/appchange/:changeid", async (req, res) =>
+router.get("/app/change/:changeid", async (req, res) =>
   routes.getAppChange(req, res)
 );
 
-router.get("/packagechange/:changeid", async (req, res) =>
+router.get("/app/package/:changeid", async (req, res) =>
   routes.getPackageChange(req, res)
 );
 
-
-router.get("/updatedapps/:appid", async (req) => routes.getUpdatedApps(req));
+router.get("/app/updates/:appid", async (req) => routes.getUpdatedApps(req));
 
 router.get("/status", async (_, res) => routes.getCounterStrikeStatus(res));
