@@ -15,18 +15,13 @@ export class Status {
     );
     this.data = this.api.then(async (e) => {
       return ((await e.json()) ?? {
-        data: {
-          status: {
-            warning: {
-              warning: "STEAM SERVICES ARE DOWN.",
-            },
-            services: {
-              SessionsLogon: "unknown",
-              SteamCommunity: "unknown",
-            },
-            matchmaker: {
-              scheduler: "unknown",
-            },
+        result: {
+          services: {
+            SessionsLogon: "unknown",
+            SteamCommunity: "unknown",
+          },
+          matchmaker: {
+            scheduler: "unknown",
           },
         },
       }) as unknown as APIResponse;
