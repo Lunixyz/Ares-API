@@ -7,19 +7,36 @@ export default Router();
 
 class Routes {
   async loadAppRoutes(): Promise<void> {
-    const Path = path.resolve(
+    const AppPath = path.resolve(
       process.cwd(),
-      "dist",
+      ".vercel",
       "src",
       "api",
       "routes",
       "app"
     );
-    const approutes = readdirSync(Path);
+    const AppRoutes = readdirSync(AppPath);
 
-    for (const file of approutes) {
+    const AppsPath = path.resolve(
+      process.cwd(),
+      ".vercel",
+      "src",
+      "api",
+      "routes",
+      "app"
+    );
+    const AppsRoutes = readdirSync(AppsPath);
+
+    for (const file of AppRoutes) {
       if (file.endsWith("js")) {
         const module = await import(`${root}/dist/src/api/routes/app/${file}`);
+        module.default();
+      }
+    }
+
+    for (const file of AppsRoutes) {
+      if (file.endsWith("js")) {
+        const module = await import(`${root}/dist/src/api/routes/apps/${file}`);
         module.default();
       }
     }
