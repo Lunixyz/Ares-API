@@ -1,6 +1,6 @@
-import https from "https";
+import http from "http";
 import { app } from "./main";
 
-const server = https.createServer(app).listen(3000);
+const server = http.createServer(app).listen(3000);
 
 export { server };
