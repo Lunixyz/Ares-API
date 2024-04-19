@@ -20,14 +20,14 @@ class Routes {
     const AppsRoutes = readdirSync(AppsPath);
 
     for (const file of AppRoutes) {
-      if (file.endsWith("js")) {
+      if (file.endsWith("ts")) {
         const module = await import(`${root}/dist/src/api/routes/app/${file}`);
         module.default();
       }
     }
 
     for (const file of AppsRoutes) {
-      if (file.endsWith("js")) {
+      if (file.endsWith("ts")) {
         const module = await import(`${root}/dist/src/api/routes/apps/${file}`);
         module.default();
       }
