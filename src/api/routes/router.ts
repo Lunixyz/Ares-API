@@ -7,23 +7,15 @@ export default Router();
 
 class Routes {
   async loadAppRoutes(): Promise<void> {
-    const AppPath = path.resolve(
-      process.cwd(),
-      ".vercel",
-      "src",
-      "api",
-      "routes",
-      "app"
-    );
+    const AppPath = path.resolve(process.cwd(), "src", "api", "routes", "app");
     const AppRoutes = readdirSync(AppPath);
 
     const AppsPath = path.resolve(
       process.cwd(),
-      ".vercel",
       "src",
       "api",
       "routes",
-      "app"
+      "apps"
     );
     const AppsRoutes = readdirSync(AppsPath);
 
