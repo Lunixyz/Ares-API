@@ -12,7 +12,7 @@ dotenv.config();
 
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(csurf({ cookie: true }));
+app.use(csurf({ cookie: { httpOnly: false, secure: true } }));
 
 app.use((err, res, next) => {
   if (err && err.statusMessage === "EBADCSRFTOKEN") {
