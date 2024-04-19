@@ -7,11 +7,9 @@ export default Router();
 
 class Routes {
   async loadAppRoutes(): Promise<void> {
-    const Path = path.join(process.cwd(), "src", "api", "routes");
+    const Path = path.join(`${appRootPath}`, "src", "api", "routes");
     const approutes = readdirSync(Path);
     for (const files of approutes) {
-      console.log(appRootPath);
-      console.log(files, "files");
       stat(`${appRootPath}/src/api/routes/${files}`, async (err, file) => {
         if (err) throw err;
         if (file.isDirectory()) {
@@ -25,8 +23,6 @@ class Routes {
           const route = readdirSync(Path);
 
           for (const insidefile of route) {
-            console.log(insidefile, "insidefiles");
-            console.log(appRootPath);
             if (insidefile.endsWith("ts")) {
               const module = await import(
                 `${appRootPath}/src/api/routes/${files}/${insidefile}`
@@ -44,4 +40,8 @@ class Routes {
   }
 }
 
-new Routes().loadAppRoutes();
+const routes = new Routes();
+
+(async () => {
+  await routes.loadAppRoutes();
+})();
