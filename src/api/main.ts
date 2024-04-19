@@ -15,10 +15,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(csurf({ cookie: true }));
 
 app.use((err, res, next) => {
-  if (err && err.statusMessage === "EBADCSRFTOKEN")
-    return res.status(403).send("Bad CSRF Token.");
-
-  next();
+  if (err && err.statusMessage === "EBADCSRFTOKEN") {
+    res.status(403).send("Token CSRF inválido");
+  } else {
+    next();
+  }
 });
 
 app.use(helmet());
