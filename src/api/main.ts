@@ -12,11 +12,11 @@ dotenv.config();
 
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(csurf({ cookie: { httpOnly: false, secure: true } }));
+app.use(csurf({ cookie: { httpOnly: true, secure: true } }));
 
 app.use((err, res, next) => {
   if (err && err.statusMessage === "EBADCSRFTOKEN") {
-    res.status(403).send("Token CSRF inválido");
+    res.status(403).send("CSRF Token is invalid!");
   } else {
     next();
   }
